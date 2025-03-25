@@ -1,60 +1,145 @@
 "use client";
 
-import { AppBar, Box, Button, Toolbar, IconButton } from "@mui/material";
+import { useState } from "react";
+import {
+  AppBar,
+  Box,
+  Button,
+  Toolbar,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
+  Container,
+} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const AppHeader: React.FC = () => {
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Các menu items
+  const leftMenuItems = [
+    { label: "Trang chủ", href: "/home" },
+    { label: "Sản phẩm", href: "/product" },
+    { label: "Tài khoản", href: "/account" },
+  ];
+
+  const rightMenuItems = [
+    { label: "Liên hệ", href: "/contact" },
+    { label: "Blog", href: "/blog" },
+    { label: "Giỏ hàng", href: "/cart" },
+  ];
+
   return (
-    <AppBar
-      position="static"
-      sx={{
-        backgroundColor: "white",
-        color: "black",
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        {/* Logo sát trái */}
-        <Box display="flex" alignItems="center">
-          <Image
-            src="/banner-so-luoc-Tien-Thang-Vet.jpg"
-            width={50}
-            height={50}
-            alt="Gà"
-            style={{ borderRadius: "50%" }}
-          />
-        </Box>
+    <>
+      <AppBar
+        position="fixed"
+        sx={{
+          backgroundColor: "white",
+          color: "black",
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        {/* Sử dụng Container để giữ layout trên desktop */}
+        <Container maxWidth="lg">
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* Mobile: Nút mở menu */}
+            {isMobile && (
+              <IconButton onClick={() => setOpenDrawer(true)} color="inherit">
+                <MenuIcon fontSize="large" />
+              </IconButton>
+            )}
 
-        {/* Menu điều hướng */}
-        <Box display="flex" alignItems="center">
-          <Button color="inherit" component={Link} href="/home">
-            Trang chủ
-          </Button>
-          <Button color="inherit" component={Link} href="/product">
-            Sản phẩm
-          </Button>
-          <Button color="inherit" component={Link} href="/about">
-            Giới thiệu
-          </Button>
-          <Button color="inherit" component={Link} href="/contact">
-            Liên hệ
-          </Button>
+            {/* Desktop: Menu trái */}
+            {!isMobile && (
+              <Box display="flex">
+                {leftMenuItems.map((item) => (
+                  <Button
+                    key={item.href}
+                    color="inherit"
+                    component={Link}
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
+            )}
 
-          {/* Nút Avatar và Giỏ hàng */}
-          <Box display="flex" alignItems="center" ml={2}>
-            <IconButton component={Link} href="/account" color="inherit">
-              <AccountCircleIcon fontSize="large" />
-            </IconButton>
-            <IconButton component={Link} href="/cart" color="inherit">
-              <ShoppingCartIcon fontSize="large" />
-            </IconButton>
-          </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+            {/* Logo căn giữa */}
+            <Box display="flex" justifyContent="center" flexGrow={1}>
+              <Image
+                src="/banner-so-luoc-Tien-Thang-Vet.jpg"
+                width={50}
+                height={50}
+                alt="Gà"
+                style={{ borderRadius: "50%" }}
+              />
+            </Box>
+
+            {/* Desktop: Menu phải */}
+            {!isMobile && (
+              <Box display="flex">
+                {rightMenuItems.map((item) => (
+                  <Button
+                    key={item.href}
+                    color="inherit"
+                    component={Link}
+                    href={item.href}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
+            )}
+
+            {/* Mobile: Nút giỏ hàng bên phải */}
+            {isMobile && (
+              <IconButton component={Link} href="/cart" color="inherit">
+                <ShoppingCartIcon fontSize="large" />
+              </IconButton>
+            )}
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Để tránh nội dung bị che bởi header cố định */}
+      <Box sx={{ height: "64px" }} />
+
+      {/* Drawer Menu trên Mobile (trượt từ trái) */}
+      <Drawer
+        anchor="left"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+      >
+        <List sx={{ width: 250 }}>
+          {[
+            ...leftMenuItems,
+            { label: "Giới thiệu", href: "/about" },
+            ...rightMenuItems,
+          ].map((item) => (
+            <ListItem key={item.href} disablePadding>
+              <ListItemButton
+                component={Link}
+                href={item.href}
+                onClick={() => setOpenDrawer(false)}
+              >
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </>
   );
 };
 

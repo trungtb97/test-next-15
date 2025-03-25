@@ -1,13 +1,10 @@
 "use client";
 
-import AppHeader from "@/components/AppHeader";
-import Footer from "@/components/Footer";
 import ProductDetail from "@/components/ProductDetail";
 import { Visibility } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Container,
   Grid,
   IconButton,
   Typography,
@@ -84,129 +81,124 @@ const HomePage = () => {
 
   return (
     <Box bgcolor={"white"}>
-      <Container maxWidth="lg">
-        <AppHeader />
-        <Box mt={isMobile ? 2 : 4}>
-          <Swiper
-            modules={[Pagination, Autoplay]}
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 3000 }}
-            loop={true}
-            style={{ marginTop: "20px" }}
-          >
-            {[
-              "/anh-bia-facebook-4.jpg",
-              "/anh-bia-facebook-5.jpg",
-              "/anh-bia-facebook-6.jpg",
-            ].map((src, index) => (
-              <SwiperSlide key={index}>
-                <Image
-                  src={src}
-                  alt={`slide ${index + 1}`}
-                  width={1200}
-                  height={600}
-                  style={{
-                    width: "100%",
-                    height: isMobile ? "200px" : isTablet ? "400px" : "auto",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                  }}
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Box>
+      <Box mt={isMobile ? 2 : 4}>
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 3000 }}
+          loop={true}
+          style={{ marginTop: "20px" }}
+        >
+          {[
+            "/anh-bia-facebook-4.jpg",
+            "/anh-bia-facebook-5.jpg",
+            "/anh-bia-facebook-6.jpg",
+          ].map((src, index) => (
+            <SwiperSlide key={index}>
+              <Image
+                src={src}
+                alt={`slide ${index + 1}`}
+                width={1200}
+                height={600}
+                style={{
+                  width: "100%",
+                  height: isMobile ? "200px" : isTablet ? "400px" : "auto",
+                  objectFit: "cover",
+                  borderRadius: 8,
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
+      <Grid
+        container
+        spacing={4}
+        alignItems="center"
+        justifyContent="center"
+        mt={isMobile ? 2 : 4}
+        textAlign={isMobile ? "center" : "left"}
+      >
         <Grid
           container
           spacing={4}
-          alignItems="center"
-          justifyContent="center"
-          mt={isMobile ? 2 : 4}
-          textAlign={isMobile ? "center" : "left"}
+          alignItems="start"
+          flexDirection={isMobile ? "column-reverse" : "row"}
         >
           <Grid
-            container
-            spacing={4}
-            alignItems="start"
-            flexDirection={isMobile ? "column-reverse" : "row"}
+            item
+            xs={12}
+            md={6}
+            display="flex"
+            justifyContent="center"
+            mb={isMobile ? 2 : 0}
           >
-            <Grid
-              item
-              xs={12}
-              md={6}
-              display="flex"
-              justifyContent="center"
-              mb={isMobile ? 2 : 0}
+            <Box position="relative">
+              <Image
+                src="/banner-so-luoc-Tien-Thang-Vet.jpg"
+                width={isMobile ? 250 : 400}
+                height={isMobile ? 250 : 400}
+                alt="Gà"
+                style={{ borderRadius: "50%" }}
+              />
+            </Box>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            display="flex"
+            flexDirection="column"
+            alignItems={isMobile ? "center" : "flex-start"}
+          >
+            <Typography
+              variant={isMobile ? "h5" : "h4"}
+              fontWeight="bold"
+              color="blue"
+              gutterBottom
             >
-              <Box position="relative">
-                <Image
-                  src="/banner-so-luoc-Tien-Thang-Vet.jpg"
-                  width={isMobile ? 250 : 400}
-                  height={isMobile ? 250 : 400}
-                  alt="Gà"
-                  style={{ borderRadius: "50%" }}
-                />
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              display="flex"
-              flexDirection="column"
-              alignItems={isMobile ? "center" : "flex-start"}
+              VỀ CHÚNG TÔI
+            </Typography>
+            <Typography color="gray" variant="body1" paragraph>
+              Trải qua gần một thập kỷ nỗ lực và phát triển với rất nhiều thăng
+              trầm trong chặng đường khẳng định vị thế.
+            </Typography>
+            <Typography color="gray" variant="body1" paragraph>
+              Viện Nghiên cứu Phát triển Thú y Chăn Nuôi ra đời với sứ mệnh mang
+              tới nguồn thực phẩm sạch và an toàn cho con người!
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ mt: isMobile ? 1 : 2, width: isMobile ? "100%" : "auto" }}
             >
-              <Typography
-                variant={isMobile ? "h5" : "h4"}
-                fontWeight="bold"
-                color="blue"
-                gutterBottom
-              >
-                VỀ CHÚNG TÔI
-              </Typography>
-              <Typography color="gray" variant="body1" paragraph>
-                Trải qua gần một thập kỷ nỗ lực và phát triển với rất nhiều
-                thăng trầm trong chặng đường khẳng định vị thế.
-              </Typography>
-              <Typography color="gray" variant="body1" paragraph>
-                Viện Nghiên cứu Phát triển Thú y Chăn Nuôi ra đời với sứ mệnh
-                mang tới nguồn thực phẩm sạch và an toàn cho con người!
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mt: isMobile ? 1 : 2, width: isMobile ? "100%" : "auto" }}
-              >
-                Xem thêm
-              </Button>
-            </Grid>
+              Xem thêm
+            </Button>
           </Grid>
         </Grid>
-        <Grid
-          container
-          spacing={4}
-          alignItems="center"
-          justifyContent="center"
-          mt={isMobile ? 2 : 4}
-          textAlign={isMobile ? "center" : "left"}
-        >
-          <Grid item xs={12}>
-            <DataGrid
-              // {...data}
-              rows={rows}
-              columns={columns}
-              pageSizeOptions={[5, 10]}
-              autoHeight
-            />
-          </Grid>
+      </Grid>
+      <Grid
+        container
+        spacing={4}
+        alignItems="center"
+        justifyContent="center"
+        mt={isMobile ? 2 : 4}
+        textAlign={isMobile ? "center" : "left"}
+      >
+        <Grid item xs={12}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSizeOptions={[5, 10]}
+            autoHeight
+          />
         </Grid>
-      </Container>
+      </Grid>
       <ProductDetail
         open={openModal}
         onClose={handleCloseModal}
         product={selectedProduct}
       />
-      <Footer />
     </Box>
   );
 };

@@ -1,21 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
   Container,
   Grid,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  Button,
-  Box,
-  Select,
   MenuItem,
+  Select,
+  Typography,
 } from "@mui/material";
-import AppHeader from "@/components/AppHeader";
-import Footer from "@/components/Footer";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const mockProducts = [
   {
@@ -108,7 +106,6 @@ const ProductPage = () => {
   return (
     <Box bgcolor={"white"}>
       <Container maxWidth="lg">
-        <AppHeader />
         <Box
           display="flex"
           justifyContent="space-between"
@@ -174,7 +171,6 @@ const ProductPage = () => {
           ))}
         </Grid>
       </Container>
-      <Footer />
     </Box>
   );
 };
