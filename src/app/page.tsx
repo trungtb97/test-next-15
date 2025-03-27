@@ -1,103 +1,208 @@
+"use client";
+
+import ProductDetail from "@/components/ProductDetail";
+import { Visibility } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleOpenModal = (value: any) => {
+    setSelectedProduct(value);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProduct(null);
+  };
+
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Tên sản phẩm", flex: 1 },
+    { field: "price", headerName: "Giá", width: 150 },
+    { field: "category", headerName: "Danh mục", width: 180 },
+    {
+      field: "actions",
+      headerName: "Thao tác",
+      width: 100,
+      align: "center",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      renderCell: (value: any) => (
+        <IconButton color="primary" onClick={() => handleOpenModal(value?.row)}>
+          <Visibility />
+        </IconButton>
+      ),
+    },
+  ];
+
+  const rows = [
+    { id: 1, name: "CPU Intel i9", price: "10,000,000đ", category: "Vi xử lý" },
+    {
+      id: 2,
+      name: "RAM Corsair 16GB",
+      price: "2,500,000đ",
+      category: "Bộ nhớ",
+    },
+    {
+      id: 3,
+      name: "SSD Samsung 1TB",
+      price: "3,200,000đ",
+      category: "Lưu trữ",
+    },
+    {
+      id: 4,
+      name: "Card RTX 4070",
+      price: "15,000,000đ",
+      category: "Card đồ họa",
+    },
+  ];
+
+  return (
+    <Box bgcolor={"white"}>
+      <Box mt={isMobile ? 2 : 4}>
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          pagination={{ clickable: true }}
+          autoplay={{ delay: 3000 }}
+          loop={true}
+          style={{ marginTop: "20px" }}
+        >
+          {[
+            "/anh-bia-facebook-4.jpg",
+            "/anh-bia-facebook-5.jpg",
+            "/anh-bia-facebook-6.jpg",
+          ].map((src, index) => (
+            <SwiperSlide key={index}>
+              <Image
+                src={src}
+                alt={`slide ${index + 1}`}
+                width={1200}
+                height={600}
+                style={{
+                  width: "100%",
+                  height: isMobile ? "200px" : isTablet ? "400px" : "auto",
+                  objectFit: "cover",
+                  borderRadius: 8,
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
+      <Grid
+        container
+        spacing={isMobile ? 2 : 4}
+        alignItems="center"
+        justifyContent="center"
+        mt={isMobile ? 2 : 4}
+        flexDirection={isMobile ? "column" : "row"} // Đảm bảo thứ tự trên mobile
+      >
+        {/* Nội dung "Về chúng tôi" sẽ lên trên trên mobile */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          textAlign={isMobile ? "center" : "left"}
+          display="flex"
+          flexDirection="column"
+          alignItems={isMobile ? "center" : "flex-start"}
+          sx={{ order: isMobile ? 1 : 2 }} // Đưa lên trên trên mobile
+        >
+          <Typography
+            variant={isMobile ? "h5" : "h4"}
+            fontWeight="bold"
+            color="blue"
+            gutterBottom
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            VỀ CHÚNG TÔI
+          </Typography>
+          <Typography color="gray" variant="body1" paragraph>
+            Trải qua gần một thập kỷ nỗ lực và phát triển với rất nhiều thăng
+            trầm trong chặng đường khẳng định vị thế.
+          </Typography>
+          <Typography color="gray" variant="body1" paragraph>
+            Viện Nghiên cứu Phát triển Thú y Chăn Nuôi ra đời với sứ mệnh mang
+            tới nguồn thực phẩm sạch và an toàn cho con người!
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              mt: 2,
+              width: isMobile ? "33.33%" : "auto",
+              alignSelf: "flex-start", // Căn trái trong khối chứa nó
+            }}
+            onClick={() => router.push(`/contact`)}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            Xem thêm
+          </Button>
+        </Grid>
+
+        {/* Ảnh sẽ xuống dưới trên mobile */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          display="flex"
+          justifyContent="center"
+          sx={{ order: isMobile ? 2 : 1 }} // Đưa ảnh xuống dưới trên mobile
         >
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/banner-so-luoc-Tien-Thang-Vet.jpg"
+            width={isMobile ? 280 : 400} // Tăng kích thước ảnh trên mobile một chút
+            height={isMobile ? 280 : 400}
+            alt="Gà"
+            style={{ borderRadius: "50%" }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+        </Grid>
+      </Grid>
+
+      <Grid
+        container
+        spacing={4}
+        alignItems="center"
+        justifyContent="center"
+        mt={isMobile ? 2 : 4}
+        textAlign={isMobile ? "center" : "left"}
+      >
+        <Grid item xs={12}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSizeOptions={[5, 10]}
+            autoHeight
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </Grid>
+      </Grid>
+      <ProductDetail
+        open={openModal}
+        onClose={handleCloseModal}
+        product={selectedProduct}
+      />
+    </Box>
   );
 }

@@ -14,62 +14,64 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Link from "next/link";
 
 const mockProducts = [
   {
     id: 1,
     name: "Giải độc gan",
     price: 115000,
-    image: "/images/giaidoccan.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "thuoc",
   },
   {
     id: 2,
     name: "ADE - Canxi thảo dược",
     price: 135000,
-    image: "/images/adecanxi.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "thuoc",
   },
   {
     id: 3,
     name: "Vitamin C 30",
     price: 235000,
-    image: "/images/vitaminc30.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "vitamin",
   },
   {
     id: 4,
     name: "B Complex",
     price: 105000,
-    image: "/images/bcomplex.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "vitamin",
   },
   {
     id: 5,
     name: "GLUCO-KC-Điện giải",
     price: 70000,
-    image: "/images/glucokc.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "dien-giai",
   },
   {
     id: 6,
     name: "VTY-CN E Selen",
     price: 325000,
-    image: "/images/vtycnselen.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "thuoc",
   },
   {
     id: 7,
     name: "MumMilk",
     price: 149000,
-    image: "/images/mummilk.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "thuc-an",
   },
   {
     id: 8,
     name: "Tetra-Trứng",
     price: 145000,
-    image: "/images/tetratrung.jpg",
+    image: "/anh-bia-facebook-4.jpg",
     category: "dien-giai",
   },
 ];
@@ -79,7 +81,6 @@ const ProductPage = () => {
   const [sortOrder, setSortOrder] = useState("popular");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const router = useRouter();
-  console.log(router, "router:::;");
 
   useEffect(() => {
     let filteredProducts = mockProducts;
@@ -106,17 +107,27 @@ const ProductPage = () => {
   return (
     <Box bgcolor={"white"}>
       <Container maxWidth="lg">
+        <Box mt={4}>
+          {/* Breadcrumbs */}
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" style={{ textDecoration: "none", color: "#1976d2" }}>
+              Trang chủ
+            </Link>
+            <Typography color="textPrimary">Sản phẩm</Typography>
+          </Breadcrumbs>
+        </Box>
+
+        {/* Bộ lọc và tiêu đề */}
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          mt={4}
+          mt={2}
         >
-          <Typography color="gray" variant="h6">
+          <Typography variant="h6" fontWeight="bold">
             SẢN PHẨM THÚ Y
           </Typography>
           <Box display="flex" gap={2}>
-            {/* Bộ lọc danh mục */}
             <Select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -137,6 +148,8 @@ const ProductPage = () => {
             </Select>
           </Box>
         </Box>
+
+        {/* Danh sách sản phẩm */}
         <Grid container spacing={4} mt={2}>
           {products.map((product) => (
             <Grid item xs={12} sm={6} md={3} key={product.id}>

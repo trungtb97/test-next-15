@@ -20,15 +20,16 @@ import Image from "next/image";
 import Link from "next/link";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useRouter } from "next/navigation";
 
 const AppHeader: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
+  const router = useRouter();
   // Các menu items
   const leftMenuItems = [
-    { label: "Trang chủ", href: "/home" },
+    { label: "Trang chủ", href: "/" },
     { label: "Sản phẩm", href: "/product" },
     { label: "Tài khoản", href: "/account" },
   ];
@@ -58,7 +59,6 @@ const AppHeader: React.FC = () => {
                 <MenuIcon fontSize="large" />
               </IconButton>
             )}
-
             {/* Desktop: Menu trái */}
             {!isMobile && (
               <Box display="flex">
@@ -74,7 +74,6 @@ const AppHeader: React.FC = () => {
                 ))}
               </Box>
             )}
-
             {/* Logo căn giữa */}
             <Box display="flex" justifyContent="center" flexGrow={1}>
               <Image
@@ -83,9 +82,9 @@ const AppHeader: React.FC = () => {
                 height={50}
                 alt="Gà"
                 style={{ borderRadius: "50%" }}
+                onClick={() => router.push(`/`)}
               />
             </Box>
-
             {/* Desktop: Menu phải */}
             {!isMobile && (
               <Box display="flex">
@@ -101,7 +100,6 @@ const AppHeader: React.FC = () => {
                 ))}
               </Box>
             )}
-
             {/* Mobile: Nút giỏ hàng bên phải */}
             {isMobile && (
               <IconButton component={Link} href="/cart" color="inherit">
@@ -111,11 +109,7 @@ const AppHeader: React.FC = () => {
           </Toolbar>
         </Container>
       </AppBar>
-
-      {/* Để tránh nội dung bị che bởi header cố định */}
       <Box sx={{ height: "64px" }} />
-
-      {/* Drawer Menu trên Mobile (trượt từ trái) */}
       <Drawer
         anchor="left"
         open={openDrawer}
