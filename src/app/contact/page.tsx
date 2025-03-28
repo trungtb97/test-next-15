@@ -131,8 +131,7 @@ const ContactPage = () => {
             Phúc
           </Typography>
           <Typography color="black" variant="body1" sx={{ mt: 1 }}>
-            <strong>Liên hệ trực tiếp:</strong> Bác sĩ Đỗ Thị Thanh Hương – 0328
-            698 465
+            <strong>Liên hệ trực tiếp:</strong> Bác sĩ Trần Bảo Trung – 0354156752
           </Typography>
 
           <Typography
