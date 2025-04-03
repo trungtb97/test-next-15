@@ -14,10 +14,9 @@ const Footer = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box bgcolor="green" color="white" py={4} mt={2}>
+    <Box bgcolor="#dc4d4d" color="white" py={4} mt={2}>
       <Container>
         <Grid container spacing={4} justifyContent="center">
-          {/* Cột thông tin */}
           <Grid item xs={12} md={6}>
             <Box
               display="flex"
@@ -26,23 +25,20 @@ const Footer = () => {
               textAlign={isMobile ? "center" : "left"}
             >
               <Typography variant="h6" fontWeight="bold">
-                VIỆN NGHIÊN CỨU PHÁT TRIỂN THÚ Y - CHĂN NUÔI
+                SHOP BÁN LINH KIỆN MÁY TÍNH
               </Typography>
               <Typography variant="body1">
-                <strong>Trụ sở chính:</strong> Số 1 ngõ 74 Trường Chinh, quận
-                Đống Đa, TP Hà Nội
+                <strong>Trụ sở chính:</strong> S4.04 Smart City, Tây Mỗ, Nam Từ
+                Liêm, Hà Nội
               </Typography>
               <Typography variant="body1">
-                <strong>Giám đốc:</strong> Bác sĩ Đỗ Thị Thanh Hương - 0328 698
-                465
+                <strong>Giám đốc:</strong> Trần Bảo Trung - 035 415 6752
               </Typography>
               <Typography variant="body1">
-                <strong>Email:</strong> duocthuycongnghecao@gmail.com
+                <strong>Email:</strong> tranbaotrung2211@gmail.com
               </Typography>
             </Box>
           </Grid>
-
-          {/* Cột bản đồ Google Maps */}
           <Grid item xs={12} md={6} textAlign="center">
             <Box display="flex" justifyContent="center">
               <iframe

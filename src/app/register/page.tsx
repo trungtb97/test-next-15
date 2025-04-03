@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -10,12 +11,28 @@ import {
   InputAdornment,
   Container,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import useRegister from "./api/useRegister";
+import { useRouter } from "next/navigation";
+
+interface FormData {
+  email: string;
+  password: string;
+  name: string;
+  address: string;
+  phone: string;
+  role: string;
+}
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
     name: "",
@@ -24,10 +41,16 @@ const RegisterPage = () => {
     role: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const router = useRouter();
+  const { mutate: registerMutate, isSuccess, isError, error } = useRegister();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<{ name?: string; value: string }>
+  ) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name!]: e.target.value,
     });
   };
 
@@ -37,7 +60,20 @@ const RegisterPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    registerMutate(formData);
+  };
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      setOpenSnackbar(true);
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    }
+  }, [isSuccess, router]);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -56,6 +92,7 @@ const RegisterPage = () => {
               <TextField
                 label="Email"
                 fullWidth
+                required
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -66,6 +103,7 @@ const RegisterPage = () => {
               <TextField
                 label="Password"
                 fullWidth
+                required
                 name="password"
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
@@ -86,6 +124,7 @@ const RegisterPage = () => {
               <TextField
                 label="Name"
                 fullWidth
+                required
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
@@ -106,21 +145,27 @@ const RegisterPage = () => {
               <TextField
                 label="Phone Number"
                 fullWidth
+                required
                 name="phone"
-                value={formData.phone}
+                value={formData?.phone}
                 onChange={handleChange}
                 margin="normal"
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Role"
-                fullWidth
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                margin="normal"
-              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Role</InputLabel>
+                <Select
+                  label="Role"
+                  name="role"
+                  value={formData?.role}
+                  onChange={() => handleChange}
+                >
+                  <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="staff">Nhân viên</MenuItem>
+                  <MenuItem value="manager">Quản lý</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
             <Grid
               item
@@ -147,6 +192,22 @@ const RegisterPage = () => {
             </Button>
           </Typography>
         </Box>
+        {openSnackbar && (
+          <Alert
+            severity="success"
+            sx={{
+              width: "100%",
+              position: "fixed",
+              top: 20,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 9999,
+            }}
+            onClose={handleCloseSnackbar}
+          >
+            Đăng ký thành công!
+          </Alert>
+        )}
       </Container>
     </Box>
   );

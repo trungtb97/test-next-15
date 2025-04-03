@@ -25,12 +25,11 @@ import { useState } from "react";
 
 const AppHeader: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [shake, setShake] = useState(false); // Hiệu ứng rung cho giỏ hàng
+  const [shake, setShake] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
 
-  // Lấy các menu items
   const leftMenuItems = [
     { label: "Trang chủ", href: "/" },
     { label: "Sản phẩm", href: "/product" },
@@ -44,13 +43,11 @@ const AppHeader: React.FC = () => {
     { label: "Đăng ký", href: "/register" },
   ];
 
-  // Lấy số lượng sản phẩm trong giỏ từ store
   const totalItems = useCartStore((state) => state.getTotalItems());
 
-  // Tạo hiệu ứng rung khi giỏ hàng được click
   const handleCartClick = () => {
     setShake(true);
-    setTimeout(() => setShake(false), 500); // Tắt hiệu ứng sau 0.5s
+    setTimeout(() => setShake(false), 500);
   };
 
   return (
