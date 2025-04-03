@@ -1,33 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useCartStore } from "@/app/store/cartStore"; // Import store giỏ hàng
+import MenuIcon from "@mui/icons-material/Menu";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   AppBar,
   Box,
   Button,
-  Toolbar,
-  IconButton,
+  Container,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  Toolbar,
   useMediaQuery,
   useTheme,
-  Container,
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const AppHeader: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [shake, setShake] = useState(false); // Hiệu ứng rung cho giỏ hàng
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-  // Các menu items
+
+  // Lấy các menu items
   const leftMenuItems = [
     { label: "Trang chủ", href: "/" },
     { label: "Sản phẩm", href: "/product" },
@@ -38,7 +41,17 @@ const AppHeader: React.FC = () => {
     { label: "Liên hệ", href: "/contact" },
     { label: "Blog", href: "/blog" },
     { label: "Giỏ hàng", href: "/cart" },
+    { label: "Đăng ký", href: "/register" },
   ];
+
+  // Lấy số lượng sản phẩm trong giỏ từ store
+  const totalItems = useCartStore((state) => state.getTotalItems());
+
+  // Tạo hiệu ứng rung khi giỏ hàng được click
+  const handleCartClick = () => {
+    setShake(true);
+    setTimeout(() => setShake(false), 500); // Tắt hiệu ứng sau 0.5s
+  };
 
   return (
     <>
@@ -50,16 +63,13 @@ const AppHeader: React.FC = () => {
           boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
         }}
       >
-        {/* Sử dụng Container để giữ layout trên desktop */}
         <Container maxWidth="lg">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-            {/* Mobile: Nút mở menu */}
             {isMobile && (
               <IconButton onClick={() => setOpenDrawer(true)} color="inherit">
                 <MenuIcon fontSize="large" />
               </IconButton>
             )}
-            {/* Desktop: Menu trái */}
             {!isMobile && (
               <Box display="flex">
                 {leftMenuItems.map((item) => (
@@ -74,18 +84,16 @@ const AppHeader: React.FC = () => {
                 ))}
               </Box>
             )}
-            {/* Logo căn giữa */}
             <Box display="flex" justifyContent="center" flexGrow={1}>
               <Image
                 src="/banner-so-luoc-Tien-Thang-Vet.jpg"
                 width={50}
                 height={50}
-                alt="Gà"
+                alt="Logo"
                 style={{ borderRadius: "50%" }}
                 onClick={() => router.push(`/`)}
               />
             </Box>
-            {/* Desktop: Menu phải */}
             {!isMobile && (
               <Box display="flex">
                 {rightMenuItems.map((item) => (
@@ -100,10 +108,39 @@ const AppHeader: React.FC = () => {
                 ))}
               </Box>
             )}
-            {/* Mobile: Nút giỏ hàng bên phải */}
             {isMobile && (
-              <IconButton component={Link} href="/cart" color="inherit">
+              <IconButton
+                color="inherit"
+                onClick={handleCartClick}
+                sx={{
+                  position: "relative",
+                  animation: shake ? "shake 0.5s ease-in-out" : "",
+                  fontSize: "28px",
+                }}
+                component={Link}
+                href="/cart"
+              >
                 <ShoppingCartIcon fontSize="large" />
+                {totalItems > 0 && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "-10px",
+                      right: "-10px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      width: "20px",
+                      height: "20px",
+                      color: "white",
+                      fontSize: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {totalItems}
+                  </Box>
+                )}
               </IconButton>
             )}
           </Toolbar>

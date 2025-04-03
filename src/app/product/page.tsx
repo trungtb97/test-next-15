@@ -10,6 +10,7 @@ import {
   Container,
   Grid,
   MenuItem,
+  Pagination,
   Select,
   Typography,
 } from "@mui/material";
@@ -20,15 +21,27 @@ import useGetProduct from "./api/useGetProduct";
 import { API_IMG_URL } from "../constants";
 import { useState } from "react";
 import useGetCategory from "./api/useGetCateGory";
+import useGetAuthor from "./api/useGetAuthor";
 
 const ProductPage = () => {
   const router = useRouter();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState("");
   const { data: dataCategory } = useGetCategory({});
+  const { data: dataAuthor } = useGetAuthor({});
   const { data: products } = useGetProduct({
-    page: 0,
-    pageSize: 10,
+    page: page,
+    pageSize: pageSize,
   });
+
+  const handlePageChange = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
 
   return (
     <Box bgcolor={"white"}>
@@ -39,29 +52,47 @@ const ProductPage = () => {
           alignItems="center"
           mt={2}
         >
-          {/* Breadcrumbs nằm bên trái */}
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href="/" style={{ textDecoration: "none", color: "#1976d2" }}>
-              Trang chủ
-            </Link>
-            <Typography color="textPrimary">Sản phẩm</Typography>
-          </Breadcrumbs>
-
-          {/* Select nằm bên phải */}
-          <Select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            displayEmpty
-            renderValue={(value) => (value ? value : "Tất cả danh mục")}
-            sx={{ minWidth: 150 }} // Đặt kích thước cố định để tránh thay đổi độ rộng
-          >
-            <MenuItem value="">Tất cả danh mục</MenuItem>
-            {dataCategory?.map((i: any) => (
-              <MenuItem key={i?.id} value={i?.name}>
-                {i?.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <Box>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link
+                href="/"
+                style={{ textDecoration: "none", color: "#1976d2" }}
+              >
+                Trang chủ
+              </Link>
+              <Typography color="textPrimary">Linh kiện máy tính</Typography>
+            </Breadcrumbs>
+          </Box>
+          <Box display="flex" gap={2}>
+            <Select
+              value={selectedAuthor}
+              onChange={(e) => setSelectedAuthor(e.target.value)}
+              displayEmpty
+              renderValue={(value) => (value ? value : "Hãng sản xuất")}
+              sx={{ minWidth: 150 }}
+            >
+              <MenuItem value="">Tất cả</MenuItem>
+              {dataAuthor?.map((i: any) => (
+                <MenuItem key={i?.id} value={i?.name}>
+                  {i?.name}
+                </MenuItem>
+              ))}
+            </Select>
+            <Select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              displayEmpty
+              renderValue={(value) => (value ? value : "Danh mục")}
+              sx={{ minWidth: 150 }}
+            >
+              <MenuItem value="">Tất cả</MenuItem>
+              {dataCategory?.map((i: any) => (
+                <MenuItem key={i?.id} value={i?.name}>
+                  {i?.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
         </Box>
 
         <Grid container spacing={4} mt={2}>
@@ -108,6 +139,14 @@ const ProductPage = () => {
             </Grid>
           ))}
         </Grid>
+        <Box display="flex" justifyContent="center" mt={4}>
+          <Pagination
+            count={products?.totalPages}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </Box>
       </Container>
     </Box>
   );

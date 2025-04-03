@@ -3,21 +3,21 @@ import { API_BASE_URL } from "@/app/constants";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const getProduct = `${API_BASE_URL}/api/product`;
+const getAuthor = `${API_BASE_URL}/api/product/getAllAuthor`;
 
 const fetcher = async (params?: any) => {
-  const response = await axios.get(getProduct, { params });
+  const response = await axios.get(getAuthor, params);
   return response.data;
 };
 
-const useGetProduct = (params?: any) => {
+const useGetAuthor = (params?: any) => {
   return useQuery({
-    queryKey: [getProduct, params],
+    queryKey: [getAuthor, params],
     queryFn: () => fetcher(params),
     select: (data: any) => {
-      return data;
+      return data?.result;
     },
   });
 };
 
-export default useGetProduct;
+export default useGetAuthor;
