@@ -2,19 +2,18 @@
 "use client";
 
 import {
+  Alert,
   Box,
+  Button,
   Container,
   Grid,
   TextField,
-  Button,
   Typography,
-  Alert,
 } from "@mui/material";
-import { useState } from "react";
 import Link from "next/link";
-import useLogin from "./api/page";
-import React from "react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import useLogin from "./api/useLogin";
 
 interface FormData {
   userName: string;
@@ -29,7 +28,7 @@ const LoginPage = () => {
 
   const { mutate: loginMutate, isSuccess, isError, error } = useLogin();
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const handleChange = (
@@ -43,10 +42,11 @@ const LoginPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     loginMutate(formData);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isSuccess) {
       setOpenSnackbar(true);
       setTimeout(() => {
@@ -54,10 +54,6 @@ const LoginPage = () => {
       }, 2000);
     }
   }, [isSuccess, router]);
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
 
   return (
     <Box maxWidth={900} mx="auto" mt={4} p={2}>
@@ -101,8 +97,9 @@ const LoginPage = () => {
                 variant="contained"
                 color="primary"
                 sx={{ width: "50%", marginTop: 2 }}
+                disabled={isSubmitting}
               >
-                Đăng nhập
+                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
               </Button>
             </Grid>
             <Grid item xs={12} sx={{ textAlign: "center", marginTop: 2 }}>
@@ -128,7 +125,7 @@ const LoginPage = () => {
               transform: "translateX(-50%)",
               zIndex: 9999,
             }}
-            onClose={handleCloseSnackbar}
+            onClose={() => setOpenSnackbar(false)}
           >
             Đăng nhập thành công 🎉🎉🎉
           </Alert>

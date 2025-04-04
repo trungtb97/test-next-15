@@ -25,7 +25,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
   const { data: product } = useGetDetail(id);
   const [tabIndex, setTabIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [shake, setShake] = useState(false); // State cho hiệu ứng rung khi thêm sản phẩm vào giỏ hàng
+  const [shake, setShake] = useState(false);
 
   const addToCart = useCartStore((state) => state.addToCart);
 
@@ -50,10 +50,8 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
       description: product.description,
       categoryName: product?.categoryName,
     });
-
-    // Kích hoạt hiệu ứng rung khi thêm vào giỏ hàng
     setShake(true);
-    setTimeout(() => setShake(false), 500); // Tắt hiệu ứng sau 0.5 giây
+    setTimeout(() => setShake(false), 500);
   };
 
   return (

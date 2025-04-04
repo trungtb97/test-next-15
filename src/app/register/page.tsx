@@ -1,25 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
-  TextField,
-  Button,
+  Alert,
   Box,
-  Typography,
+  Button,
+  Container,
+  FormControl,
+  Grid,
   IconButton,
   InputAdornment,
-  Container,
-  Grid,
-  FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  Alert,
+  Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import useRegister from "./api/useRegister";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { API_BASE_URL } from "../constants";
+import useRegister from "./api/useRegister";
 
 interface FormData {
   email: string;
@@ -31,7 +34,14 @@ interface FormData {
 }
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [emailExists, setEmailExists] = useState(false); // Trạng thái kiểm tra email
+  const [isSubmitting, setIsSubmitting] = useState(false); // Trạng thái khi đang gửi đăng ký
+  const [emailCheckTimeout, setEmailCheckTimeout] = useState<any>(null); // Để lưu trữ timeout
+  const [isLoading, setIsLoading] = useState(false); // Trạng thái loading khi kiểm tra email
+  const { mutate: registerMutate, isSuccess, isError, error } = useRegister(); // Custom Hook để đăng ký
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -41,9 +51,24 @@ const RegisterPage = () => {
     role: "",
   });
 
-  const router = useRouter();
-  const { mutate: registerMutate, isSuccess, isError, error } = useRegister();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  // Kiểm tra xem email đã tồn tại hay chưa
+  const checkEmailExist = async (email: string) => {
+    setIsLoading(true); // Set loading to true
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/api/auth/checkEmailExist/${email}`
+      );
+      if (response.data.message === "Email already existed in system") {
+        setEmailExists(true); // Nếu email tồn tại, cập nhật trạng thái
+      } else {
+        setEmailExists(false); // Nếu email không tồn tại, cho phép đăng ký
+      }
+    } catch (error) {
+      console.log("Error checking email:", error);
+    } finally {
+      setIsLoading(false); // Kết thúc loading
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<{ name?: string; value: string }>
@@ -52,6 +77,18 @@ const RegisterPage = () => {
       ...formData,
       [e.target.name!]: e.target.value,
     });
+    // Nếu có timeout cũ, xóa nó
+    if (emailCheckTimeout) {
+      clearTimeout(emailCheckTimeout);
+    }
+
+    // Đặt timeout mới để gọi API sau 3 giây
+    if (e.target.name === "email") {
+      const timeout = setTimeout(() => {
+        checkEmailExist(e.target.value);
+      }, 3000); // 3000 ms = 3 giây
+      setEmailCheckTimeout(timeout); // Lưu lại timeout
+    }
   };
 
   const handleClickShowPassword = () => {
@@ -60,6 +97,7 @@ const RegisterPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     registerMutate(formData);
   };
 
@@ -67,14 +105,10 @@ const RegisterPage = () => {
     if (isSuccess) {
       setOpenSnackbar(true);
       setTimeout(() => {
-        router.push("/");
+        router.push("/"); // Redirect to homepage after successful registration
       }, 2000);
     }
   }, [isSuccess, router]);
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
 
   return (
     <Box maxWidth={900} mx="auto" mt={4} p={2}>
@@ -85,7 +119,6 @@ const RegisterPage = () => {
         <Typography variant="body1" align="center" color="black" gutterBottom>
           Trở thành khách hàng mới
         </Typography>
-
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -97,6 +130,11 @@ const RegisterPage = () => {
                 value={formData.email}
                 onChange={handleChange}
                 margin="normal"
+                helperText={
+                  emailExists ? "Email đã tồn tại trong hệ thống" : ""
+                }
+                error={emailExists}
+                disabled={isLoading}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -118,6 +156,7 @@ const RegisterPage = () => {
                     </InputAdornment>
                   ),
                 }}
+                disabled={isLoading || emailExists === true}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -129,6 +168,7 @@ const RegisterPage = () => {
                 value={formData.name}
                 onChange={handleChange}
                 margin="normal"
+                disabled={isLoading || emailExists === true}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -139,6 +179,7 @@ const RegisterPage = () => {
                 value={formData.address}
                 onChange={handleChange}
                 margin="normal"
+                disabled={isLoading || emailExists === true}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -150,6 +191,7 @@ const RegisterPage = () => {
                 value={formData?.phone}
                 onChange={handleChange}
                 margin="normal"
+                disabled={isLoading || emailExists === true}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -159,7 +201,8 @@ const RegisterPage = () => {
                   label="Role"
                   name="role"
                   value={formData?.role}
-                  onChange={() => handleChange}
+                  onChange={(e: any) => handleChange(e)}
+                  disabled={isLoading || emailExists === true}
                 >
                   <MenuItem value="admin">Admin</MenuItem>
                   <MenuItem value="staff">Nhân viên</MenuItem>
@@ -178,20 +221,15 @@ const RegisterPage = () => {
                 color="primary"
                 style={{ width: "33%" }}
                 sx={{ marginTop: 2 }}
+                disabled={isSubmitting} // Disable nút khi email đã tồn tại, các trường thiếu hoặc đang gửi yêu cầu
               >
-                ĐĂNG KÝ TÀI KHOẢN
+                {isSubmitting ? "Đang đăng ký..." : "ĐĂNG KÝ TÀI KHOẢN"}
               </Button>
             </Grid>
           </Grid>
         </form>
-        <Box sx={{ textAlign: "center", marginTop: 2 }}>
-          <Typography color="black" variant="body2">
-            Đã có tài khoản?{" "}
-            <Button color="primary" href="/login">
-              Đăng nhập
-            </Button>
-          </Typography>
-        </Box>
+
+        {/* Hiển thị thông báo sau khi đăng ký thành công */}
         {openSnackbar && (
           <Alert
             severity="success"
@@ -203,11 +241,20 @@ const RegisterPage = () => {
               transform: "translateX(-50%)",
               zIndex: 9999,
             }}
-            onClose={handleCloseSnackbar}
+            onClose={() => setOpenSnackbar(false)}
           >
             Đăng ký thành công!
           </Alert>
         )}
+
+        <Box sx={{ textAlign: "center", marginTop: 2 }}>
+          <Typography color="black" variant="body2">
+            Đã có tài khoản?{" "}
+            <Button color="primary" href="/login">
+              Đăng nhập
+            </Button>
+          </Typography>
+        </Box>
       </Container>
     </Box>
   );
