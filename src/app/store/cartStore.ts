@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -17,7 +18,7 @@ type CartState = {
   updateQuantity: (id: string, quantity: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
-  getTotalItems: () => number; // Hàm tính tổng số lượng sản phẩm
+  getTotalItems: () => number;
 };
 
 export const useCartStore = create<CartState>()(
@@ -26,17 +27,17 @@ export const useCartStore = create<CartState>()(
       cart: [],
       addToCart: (product) =>
         set((state) => {
-          const exists = state.cart.find((p) => p.id === product.id);
+          const exists = state?.cart?.find((p) => p?.id === product?.id);
           if (exists) {
             return {
-              cart: state.cart.map((p) =>
+              cart: state?.cart?.map((p: any) =>
                 p.id === product.id
                   ? { ...p, quantity: p.quantity + product.quantity }
                   : p
               ),
             };
           }
-          return { cart: [...state.cart, product] };
+          return { cart: [...state?.cart, product] };
         }),
       updateQuantity: (id, quantity) =>
         set((state) => ({
@@ -48,7 +49,7 @@ export const useCartStore = create<CartState>()(
         })),
       clearCart: () => set({ cart: [] }),
       getTotalItems: () =>
-        get().cart.reduce((total, product) => total + product.quantity, 0),
+        get().cart?.reduce((total, product) => total + product.quantity, 0),
     }),
     {
       name: "cart-storage",

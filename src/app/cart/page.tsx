@@ -17,7 +17,7 @@ import { API_IMG_URL } from "../constants";
 import { useCartStore } from "../store/cartStore";
 
 const CartPage = () => {
-  const cartItems = useCartStore((state) => state.cart);
+  const cartItems = useCartStore((state) => state?.cart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
 

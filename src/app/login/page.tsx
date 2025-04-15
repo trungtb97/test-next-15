@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import useLogin from "./api/useLogin";
+import { useUserStore } from "../store/userStore";
 
 interface FormData {
   userName: string;
@@ -29,6 +30,7 @@ const LoginPage = () => {
   const { mutate: loginMutate, isSuccess, isError, error } = useLogin();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setUser } = useUserStore();
   const router = useRouter();
 
   const handleChange = (
@@ -52,8 +54,15 @@ const LoginPage = () => {
       setTimeout(() => {
         router.push("/");
       }, 2000);
+      setUser({ userName: formData.userName, password: formData.password }); // Store the user data in zustand
+      // const userData = {
+      //   userName: formData.userName,
+      //   password: formData.password,
+      // };
+      // // Lưu thông tin người dùng vào localStorage
+      // localStorage.setItem("user", JSON.stringify(userData));
     }
-  }, [isSuccess, router]);
+  }, [formData, isSuccess, router, setUser]);
 
   return (
     <Box maxWidth={900} mx="auto" mt={4} p={2}>
@@ -71,7 +80,7 @@ const LoginPage = () => {
                 label="Địa chỉ email"
                 fullWidth
                 name="userName"
-                value={formData.userName}
+                value={formData?.userName}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -82,7 +91,7 @@ const LoginPage = () => {
                 fullWidth
                 name="password"
                 type="password"
-                value={formData.password}
+                value={formData?.password}
                 onChange={handleChange}
                 margin="normal"
               />
